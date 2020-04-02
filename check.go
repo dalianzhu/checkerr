@@ -1,6 +1,10 @@
 package checkerr
 
-import "fmt"
+import (
+    "errors"
+    "fmt"
+    "strings"
+)
 
 /*
 checkerr 取代讨厌的 if err!=nil。
@@ -56,7 +60,12 @@ func MarkPanic(e *error) {
 func CheckError(err error, replaceErr ...error) {
     if err != nil {
         if len(replaceErr) > 0 {
-            panic(newInnerErr(replaceErr[0]))
+            var errInfo strings.Builder
+            errInfo.Grow(3)
+            for _, e := range replaceErr {
+                errInfo.WriteString(e.Error())
+            }
+            panic(newInnerErr(errors.New(errInfo.String())))
         }
         panic(newInnerErr(err))
     }
