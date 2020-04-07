@@ -57,13 +57,13 @@ func MarkPanic(e *error) {
 }
 
 // CheckError 检查error，必须和MarkPanic配合使用，使用前仔细阅读包注释
-func CheckError(err error, replaceErr ...error) {
+func CheckError(err error, replaceErr ...interface{}) {
     if err != nil {
         if len(replaceErr) > 0 {
             var errInfo strings.Builder
             errInfo.Grow(3)
             for _, e := range replaceErr {
-                errInfo.WriteString(e.Error())
+                errInfo.WriteString(fmt.Sprint(e))
             }
             panic(newInnerErr(errors.New(errInfo.String())))
         }
